@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createFilm(@RequestBody User newUser) {
+    public User createUser(@RequestBody User newUser) {
         log.info("Пришел запрос на добавление пользователя с логином {} ", newUser.getLogin());
         validation(newUser);
         newUser.setId(idGenerator++);
@@ -61,11 +61,13 @@ public class UserController {
             newUser.setName(newUser.getLogin());
             log.trace("Имя пользователя не указано, подставили значение логина {} ", newUser.getLogin());
         }
-        if (newUser.getEmail().isBlank() || newUser.getEmail().split("@").length > 2) {
+        if (newUser.getEmail() == null || newUser.getEmail().isBlank() ||
+                newUser.getEmail().split("@").length != 2) {
             log.debug("Пользователь некорректно ввел почту {} ", newUser.getEmail());
             throw new ValidationException("Пользователь некорректно ввел почту");
         }
-        if (newUser.getLogin().isBlank() || newUser.getLogin().split(" ").length > 1) {
+        if (newUser.getLogin() == null || newUser.getLogin().isBlank() ||
+                newUser.getLogin().split(" ").length > 1) {
             log.debug("Пользователь некорректно ввел данные логина {} ", newUser.getLogin());
             throw new ValidationException("Пользователь некорректно ввел даанные логина");
         }
