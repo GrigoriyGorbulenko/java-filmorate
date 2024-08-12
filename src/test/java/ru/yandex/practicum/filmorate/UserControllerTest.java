@@ -91,5 +91,4 @@ public class UserControllerTest {
         user.setBirthday(LocalDate.of(1980, 2, 22));
         assertThrows(RuntimeException.class, () -> userController.createUser(user));
     }
-
 }

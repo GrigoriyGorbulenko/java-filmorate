@@ -16,7 +16,6 @@ import java.util.Map;
 public class FilmController {
 
     private final Map<Integer, Film> films = new HashMap<>();
-
     private int idGenerator = 1;
     private final int maxLengthDescription = 200;
     private final LocalDate dateReleaseNotEarle = LocalDate.of(1895, 12, 28);
