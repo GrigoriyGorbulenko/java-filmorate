@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -16,7 +17,7 @@ public class UserControllerTest {
     @Test
     public void validationCreateUserWithoutData() {
         User user = new User();
-        assertThrows(RuntimeException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 
     @Test
@@ -46,7 +47,7 @@ public class UserControllerTest {
         user.setLogin("dolore");
         user.setEmail(" ");
         user.setBirthday(LocalDate.of(1980, 2, 22));
-        assertThrows(RuntimeException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 
     @Test
@@ -54,7 +55,7 @@ public class UserControllerTest {
         User user = new User();
         user.setLogin("dolore");
         user.setBirthday(LocalDate.of(1980, 2, 22));
-        assertThrows(RuntimeException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 
     @Test
@@ -63,7 +64,7 @@ public class UserControllerTest {
         user.setLogin("dolore");
         user.setEmail("mailmail.ru");
         user.setBirthday(LocalDate.of(1980, 2, 22));
-        assertThrows(RuntimeException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 
     @Test
@@ -71,7 +72,7 @@ public class UserControllerTest {
         User user = new User();
         user.setEmail("mail@mail.ru");
         user.setBirthday(LocalDate.of(1980, 2, 22));
-        assertThrows(RuntimeException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 
     @Test
@@ -80,7 +81,7 @@ public class UserControllerTest {
         user.setLogin("  ");
         user.setEmail("mail@mail.ru");
         user.setBirthday(LocalDate.of(1980, 2, 22));
-        assertThrows(RuntimeException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 
     @Test
@@ -89,6 +90,6 @@ public class UserControllerTest {
         user.setLogin("Dog mat");
         user.setEmail("mail@mail.ru");
         user.setBirthday(LocalDate.of(1980, 2, 22));
-        assertThrows(RuntimeException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 }

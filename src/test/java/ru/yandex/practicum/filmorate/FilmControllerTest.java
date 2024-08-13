@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ public class FilmControllerTest {
     @Test
     public void validationCreateFilmWithoutData() {
         Film film = new Film();
-        assertThrows(RuntimeException.class, () -> filmController.createFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.createFilm(film));
     }
 
     @Test
@@ -24,7 +25,7 @@ public class FilmControllerTest {
         film.setDescription("Очень веселое");
         film.setReleaseDate(LocalDate.of(1980, 2, 22));
         film.setDuration(120);
-        assertThrows(RuntimeException.class, () -> filmController.createFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.createFilm(film));
     }
 
     @Test
@@ -34,7 +35,7 @@ public class FilmControllerTest {
         film.setDescription("Очень веселое");
         film.setReleaseDate(LocalDate.of(1980, 2, 22));
         film.setDuration(120);
-        assertThrows(RuntimeException.class, () -> filmController.createFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.createFilm(film));
     }
 
     @Test
@@ -54,7 +55,7 @@ public class FilmControllerTest {
                 "Очень веселоеОчень веселоеОчень веселоеОчень веселоеОчень веселоеОчень веселое");
         film.setReleaseDate(LocalDate.of(1980, 2, 22));
         film.setDuration(120);
-        assertThrows(RuntimeException.class, () -> filmController.createFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.createFilm(film));
     }
 
     @Test
@@ -64,7 +65,7 @@ public class FilmControllerTest {
         film.setDescription("Очень веселое");
         film.setReleaseDate(LocalDate.of(1840, 2, 22));
         film.setDuration(120);
-        assertThrows(RuntimeException.class, () -> filmController.createFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.createFilm(film));
     }
 
     @Test
@@ -74,7 +75,7 @@ public class FilmControllerTest {
         film.setDescription("Очень веселое");
         film.setReleaseDate(LocalDate.of(1980, 2, 22));
         film.setDuration(-1);
-        assertThrows(RuntimeException.class, () -> filmController.createFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.createFilm(film));
     }
 
     @Test
@@ -84,7 +85,7 @@ public class FilmControllerTest {
         film.setDescription("Очень веселое");
         film.setReleaseDate(LocalDate.of(1980, 2, 22));
         film.setDuration(0);
-        assertThrows(RuntimeException.class, () -> filmController.createFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.createFilm(film));
     }
 }
 

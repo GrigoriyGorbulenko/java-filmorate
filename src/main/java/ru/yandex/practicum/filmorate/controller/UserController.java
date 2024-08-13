@@ -27,7 +27,7 @@ public class UserController {
     @PostMapping
     public User createUser(@RequestBody User newUser) {
         log.info("Пришел запрос на добавление пользователя с логином {} ", newUser.getLogin());
-        validation(newUser);
+        validate(newUser);
         newUser.setId(idGenerator++);
         users.put(newUser.getId(), newUser);
         log.trace("Добавлен пользователь {} ",newUser);
@@ -43,7 +43,7 @@ public class UserController {
         }
         if (users.containsKey(newUser.getId())) {
             User oldUser = users.get(newUser.getId());
-            validation(newUser);
+            validate(newUser);
             oldUser.setName(newUser.getName());
             oldUser.setBirthday(newUser.getBirthday());
             oldUser.setEmail(newUser.getEmail());
@@ -55,7 +55,7 @@ public class UserController {
         throw new ValidationException("Пользователь с id = " + newUser.getId() + " не найден");
     }
 
-    private void validation(User newUser) {
+    private void validate(User newUser) {
         if (newUser.getName() == null || newUser.getName().isBlank()) {
             newUser.setName(newUser.getLogin());
             log.trace("Имя пользователя не указано, подставили значение логина {} ", newUser.getLogin());

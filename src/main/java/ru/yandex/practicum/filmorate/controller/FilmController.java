@@ -28,7 +28,7 @@ public class FilmController {
     @PostMapping
     public Film createFilm(@RequestBody Film newFilm) {
         log.info("Пришел запрос на добавление фильма с названием {}", newFilm.getName());
-        validation(newFilm);
+        validate(newFilm);
         newFilm.setId(idGenerator++);
         films.put(newFilm.getId(), newFilm);
         log.trace("Добавлен фильм {}",newFilm);
@@ -44,7 +44,7 @@ public class FilmController {
         }
         if (films.containsKey(newFilm.getId())) {
             Film oldFilm = films.get(newFilm.getId());
-            validation(newFilm);
+            validate(newFilm);
             oldFilm.setName(newFilm.getName());
             oldFilm.setDescription(newFilm.getDescription());
             oldFilm.setReleaseDate(newFilm.getReleaseDate());
@@ -56,7 +56,7 @@ public class FilmController {
         throw new ValidationException("Фильм с id = " + newFilm.getId() + " не найден");
     }
 
-    private void validation(Film film) {
+    private void validate(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             log.debug("Пользователь не ввел название фильма");
             throw new ValidationException("Название не должно быть пустым");
