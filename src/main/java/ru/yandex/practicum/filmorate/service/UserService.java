@@ -39,8 +39,12 @@ public class UserService {
         return userStorage.createUser(newUser);
     }
 
-    public void deleteUser(Integer userId) {
+    public void deleteUser(int userId) {
         log.info("Пришел запрос на удаление пользователя с логином {} ", userStorage.getUserById(userId).getLogin());
+        if (userStorage.getUserById(userId) == null) {
+            log.debug("Пользователь с введеным id = {} не найден", userId);
+            throw new NotFoundException("Пользователь с введеным id = " + userId + " не найде");
+        }
         userStorage.deleteUser(userId);
     }
 

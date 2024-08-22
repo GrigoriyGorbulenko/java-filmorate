@@ -20,7 +20,7 @@ public class ErrorHandler {
         return new ErrorResponse("Ошибка валидации", exception.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(NotFoundException exception) {
         log.error("Данные при запросе указаны некорректно {}", exception.getMessage());
