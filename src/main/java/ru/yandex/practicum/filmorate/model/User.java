@@ -12,5 +12,5 @@ public class User {
     private String name;
     private String email;
     private LocalDate birthday;
-    private Set<Long> friends;
+    private Set<Integer> friends;
 }

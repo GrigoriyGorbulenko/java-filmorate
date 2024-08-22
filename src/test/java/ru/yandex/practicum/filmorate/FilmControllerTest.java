@@ -4,11 +4,8 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -27,7 +24,7 @@ public class FilmControllerTest {
         Film film = new Film();
         film.setDescription("Очень веселое");
         film.setReleaseDate(LocalDate.of(1980, 2, 22));
-        film.setDuration(120);
+        film.setDuration(120L);
         assertThrows(ValidationException.class, () -> filmController.createFilm(film));
     }
 

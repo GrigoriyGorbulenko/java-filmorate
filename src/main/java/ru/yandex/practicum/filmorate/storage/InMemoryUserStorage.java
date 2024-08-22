@@ -1,7 +1,8 @@
-package ru.yandex.practicum.filmorate.storage.film;
+package ru.yandex.practicum.filmorate.storage;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
@@ -21,8 +22,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(User newUser) {
-        return users.get(newUser.getId());
+    public User getUserById(Integer userId) {
+        return users.get(userId);
     }
 
     @Override
@@ -33,8 +34,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void deleteUser(User newUser) {
-        users.remove(newUser.getId());
+    public void deleteUser(Integer userId) {
+        users.remove(userId);
     }
 
     @Override
