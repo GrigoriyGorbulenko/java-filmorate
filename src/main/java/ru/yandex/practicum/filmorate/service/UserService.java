@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
@@ -40,7 +39,7 @@ public class UserService {
     }
 
     public void deleteUser(int userId) {
-        log.info("Пришел запрос на удаление пользователя с логином {} ", userStorage.getUserById(userId).getLogin());
+        log.info("Пришел запрос на удаление пользователя с id {} ", userId);
         if (userStorage.getUserById(userId) == null) {
             log.debug("Пользователь с введеным id = {} не найден", userId);
             throw new NotFoundException("Пользователь с введеным id = " + userId + " не найде");
@@ -53,36 +52,35 @@ public class UserService {
         log.info("Пришел запрос на обновление пользователя с логином {} ", newUser.getLogin());
         if (newUser.getId() == null) {
             log.info("Пользователь не указал id");
-            throw new ValidationException("Id должен быть указан");
+            throw new NotFoundException("Id должен быть указан");
         }
-        if (userStorage.getAllUsers().contains(newUser)) {
+        if (userStorage.getUserById(newUser.getId()) != null) {
             validate(newUser);
             log.trace("Обновлен пользователь с id {} ", newUser.getId());
             return userStorage.updateUser(newUser);
         }
         log.debug("Пользователь с введеным id = {} не найден", newUser.getId());
-        throw new ValidationException("Пользователь с id = " + newUser.getId() + " не найден");
+        throw new NotFoundException("Пользователь с id = " + newUser.getId() + " не найден");
     }
 
     public void createFriend(Integer userId, Integer friendId) {
         log.info("Пришел запрос на добавление друга с id = {} ", friendId);
         if (userStorage.getUserById(userId) == null) {
             log.debug("Пользователь некорректно ввел id {} ", userId);
-            throw new NotFoundException("Пользователь с id = {} " + userId + " не найден");
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
         if (userStorage.getUserById(friendId) == null) {
             log.debug("Пользователь некорректно ввел id {} ", friendId);
-            throw new NotFoundException("Друг с id = {} " + friendId + " не найден");
+            throw new NotFoundException("Друг с id = " + friendId + " не найден");
         }
-        if (!userStorage.getUserById(userId).getFriends().contains(friendId)) {
+        if (userStorage.getUserById(userId).getFriends().contains(friendId)) {
             log.debug("Пользователь некорректно ввел id друга {} ", friendId);
-            throw new NotFoundException("Друг с id = {} " + friendId + " в друзьях не найден");
+            throw new NotFoundException("Друг с id = " + friendId + " в друзьях не найден");
         }
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
-        user.getFriends().add(friend.getId());
-        friend.getFriends().add(user.getId());
-
+        user.getFriends().add(friendId);
+        friend.getFriends().add(userId);
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
@@ -90,15 +88,15 @@ public class UserService {
                 friendId);
         if (userStorage.getUserById(userId) == null) {
             log.debug("Пользователь некорректно ввел id {} ", userId);
-            throw new NotFoundException("Пользователь с id = {} " + userId + " не найден");
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
         if (userStorage.getUserById(friendId) == null) {
             log.debug("Пользователь некорректно ввел id {} ", friendId);
-            throw new NotFoundException("Пользователь с id = {} " + friendId + " не найден");
+            throw new NotFoundException("Пользователь с id = " + friendId + " не найден");
         }
         if (!userStorage.getUserById(userId).getFriends().contains(friendId)) {
             log.debug("Пользователь некорректно ввел id друга {} ", friendId);
-            throw new NotFoundException("Друг с id = {} " + friendId + " не найден");
+            throw new NotFoundException("Друг с id = " + friendId + " не найден");
         }
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
@@ -109,11 +107,11 @@ public class UserService {
     public Collection<User> getAllUserFriends(Integer userId) {
         if (userStorage.getUserById(userId) == null) {
             log.debug("Пользователь с id {} не найден", userId);
-            throw new NotFoundException("Пользователь с id = {} " + userId + " не найден");
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
         if (userStorage.getUserById(userId).getFriends() == null) {
             log.debug("У пользователя с id {} друзья не найдены", userId);
-            throw new NotFoundException("У пользователя с id  " + userId + " друзья не найдены");
+            throw new NotFoundException("У пользователя с id = " + userId + " друзья не найдены");
         }
         return userStorage.getUserById(userId).getFriends().stream()
                 .map(userStorage::getUserById)
@@ -123,11 +121,11 @@ public class UserService {
     public Collection<User> getCommonFriends(Integer userId, Integer commonId) {
         if (userStorage.getUserById(userId) == null) {
             log.debug("Пользователь некорректно ввел id {} ", userId);
-            throw new NotFoundException("Пользователь с id = {} " + userId + " не найден");
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
         if (userStorage.getUserById(commonId) == null) {
             log.debug("Пользователь некорректно ввел id {} ", commonId);
-            throw new NotFoundException("Пользователь с id = {} " + commonId + " не найден");
+            throw new NotFoundException("Пользователь с id = " + commonId + " не найден");
         }
         return userStorage.getUserById(userId).getFriends().stream()
                 .filter(id -> userStorage.getUserById(commonId).getFriends().contains(id))

@@ -28,8 +28,8 @@ public class UserController {
         return userService.updateUser(newUser);
     }
 
-    @DeleteMapping
-    public void deleteUser(@RequestBody Integer userId) {
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable("id") int userId) {
         userService.deleteUser(userId);
     }
 
@@ -40,14 +40,25 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friendId}")
     public void createFriend(@PathVariable("id") int userId,
-                             @PathVariable("friends") int friendId) {
+                             @PathVariable("friendId") int friendId) {
         userService.createFriend(userId, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable("id") int userId,
-                             @PathVariable("friends") int friendId) {
+                             @PathVariable("friendId") int friendId) {
         userService.deleteFriend(userId, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Collection<User> createFriend(@PathVariable("id") int userId) {
+       return userService.getAllUserFriends(userId);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriends(@PathVariable("id") int userId,
+                            @PathVariable("otherId") int otherId) {
+        return userService.getCommonFriends(userId, otherId);
     }
 }
 
