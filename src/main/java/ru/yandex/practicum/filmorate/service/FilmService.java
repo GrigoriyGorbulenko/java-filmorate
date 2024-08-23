@@ -56,7 +56,7 @@ public class FilmService {
         if (filmStorage.getFilmById(newFilm.getId()) != null) {
             validate(newFilm);
             log.trace("Обновлен фильм с id {}", newFilm.getId());
-            return filmStorage.createFilm(newFilm);
+            return filmStorage.updateFilm(newFilm);
         }
         log.debug("Фильм с введеным id = {} не найден ", newFilm.getId());
         throw new NotFoundException("Фильм с id = " + newFilm.getId() + " не найден");
@@ -91,7 +91,7 @@ public class FilmService {
 
     public Collection<Film> getPopularFilms(Integer count) {
         return filmStorage.getAllFilms().stream()
-                .sorted(Comparator.comparing(film -> film.getUsersLikes().size()))
+                .sorted(Comparator.comparing(film -> film.getUsersLikes().size(), Comparator.reverseOrder()))
                 .limit(count)
                 .toList();
     }

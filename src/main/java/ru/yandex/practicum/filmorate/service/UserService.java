@@ -94,10 +94,6 @@ public class UserService {
             log.debug("Пользователь некорректно ввел id {} ", friendId);
             throw new NotFoundException("Пользователь с id = " + friendId + " не найден");
         }
-        if (!userStorage.getUserById(userId).getFriends().contains(friendId)) {
-            log.debug("Пользователь некорректно ввел id друга {} ", friendId);
-            throw new NotFoundException("Друг с id = " + friendId + " не найден");
-        }
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
         user.getFriends().remove(friend.getId());
