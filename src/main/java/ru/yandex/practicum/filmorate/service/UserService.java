@@ -42,7 +42,7 @@ public class UserService {
         log.info("Пришел запрос на удаление пользователя с id {} ", userId);
         if (userStorage.getUserById(userId) == null) {
             log.debug("Пользователь с введеным id = {} не найден", userId);
-            throw new NotFoundException("Пользователь с введеным id = " + userId + " не найде");
+            throw new NotFoundException("Пользователь с введеным id = " + userId + " не найден");
         }
         userStorage.deleteUser(userId);
     }
@@ -77,10 +77,9 @@ public class UserService {
             log.debug("Пользователь некорректно ввел id друга {} ", friendId);
             throw new NotFoundException("Друг с id = " + friendId + " в друзьях не найден");
         }
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        user.getFriends().add(friendId);
-        friend.getFriends().add(userId);
+        User user = getUserById(userId);
+        User friend = getUserById(userId);
+        userStorage.addFriend(user, friend);
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
@@ -94,10 +93,7 @@ public class UserService {
             log.debug("Пользователь некорректно ввел id {} ", friendId);
             throw new NotFoundException("Пользователь с id = " + friendId + " не найден");
         }
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        user.getFriends().remove(friend.getId());
-        friend.getFriends().remove(user.getId());
+        userStorage.deleteFriend(userId, friendId);
     }
 
     public Collection<User> getAllUserFriends(Integer userId) {
