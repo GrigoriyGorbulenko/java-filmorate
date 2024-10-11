@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -16,15 +17,12 @@ public class MpaService {
     private MpaStorage mpaStorage;
 
     public Collection<Mpa> getAllMpa() {
-        return mpaStorage.getAll();
+        return mpaStorage.getAllMpa();
     }
 
     public Mpa getMpaById(Integer mpaId) {
         log.info("Пришел запрос на получение рейтинга с id {} ", mpaId);
-        Mpa mpa = mpaStorage.getById(mpaId);
-        if (mpa == null) {
-            throw new NotFoundException("Рейтинг с id = " + mpaId + " не найден");
-        }
-        return mpa;
+        return mpaStorage.getMpaById(mpaId)
+                .orElseThrow(() -> new NotFoundException("Рейтинг с id = " + mpaId + " не найден"));
     }
 }

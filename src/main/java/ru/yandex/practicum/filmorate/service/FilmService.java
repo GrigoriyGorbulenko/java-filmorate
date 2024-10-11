@@ -8,11 +8,14 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -20,6 +23,8 @@ import java.util.Comparator;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final GenreStorage genreStorage;
+    private final MpaStorage mpaStorage;
     private final int maxLengthDescription = 200;
     private final LocalDate dateReleaseNotEarle = LocalDate.of(1895, 12, 28);
 
@@ -30,7 +35,10 @@ public class FilmService {
     public Film getFilmById(Integer filmId) {
         if (filmStorage.getFilmById(filmId) == null) {
             validate(filmStorage.getFilmById(filmId));
-            return filmStorage.getFilmById(filmId);
+            Film film = filmStorage.getFilmById(filmId);
+            film.setMpa(mpaStorage.getMpaByFilmId(filmId)
+                    .orElseThrow(() -> new NotFoundException("Фильм с данным mpa не найден")));
+            return film;
         }
         log.debug("Фильм с введеным id = {} не найден ", filmId);
         throw new NotFoundException("Фильм с id = " + filmId + " не найден");
@@ -39,13 +47,12 @@ public class FilmService {
     public Film createFilm(Film newFilm) {
         log.trace("Добавлен фильм {}", newFilm);
         validate(newFilm);
-        return filmStorage.createFilm(newFilm);
+        Film film = filmStorage.getFilmById(newFilm.getId());
+        film.setMpa(mpaStorage.getMpaByFilmId(newFilm.getId())
+                .orElseThrow(() -> new NotFoundException("Фильм с данным mpa не найден")));
+        return film;
     }
 
-    public void deleteFilm(Integer filmId) {
-        filmStorage.deleteFilm(filmId);
-        log.trace("Удален фильм {}", filmId);
-    }
 
     public Film updateFilm(Film newFilm) {
         log.info("Пришел запрос на обновление фильма с id {}", newFilm.getId());

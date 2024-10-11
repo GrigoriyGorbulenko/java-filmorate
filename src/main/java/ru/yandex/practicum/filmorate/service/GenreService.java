@@ -16,15 +16,12 @@ public class GenreService {
     private final GenreStorage genreStorage;
 
     public Collection<Genre> getAllGenres() {
-        return genreStorage.getAll();
+        return genreStorage.getAllGenre();
     }
 
     public Genre getGenreById(Integer genreId) {
         log.info("Пришел запрос на получение жанра с id {} ", genreId);
-        Genre genre = genreStorage.getById(genreId);
-        if (genre == null) {
-            throw new NotFoundException("Жанр с id = " + genreId + " не найден");
-        }
-        return genre;
+         return genreStorage.getGenreById(genreId)
+                 .orElseThrow(()-> new NotFoundException("Жанр с id = " + genreId + " не найден"));
     }
 }

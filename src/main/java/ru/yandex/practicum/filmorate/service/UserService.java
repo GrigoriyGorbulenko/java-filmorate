@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -25,7 +26,7 @@ public class UserService {
     public User getUserById(Integer userId) {
         if (userStorage.getUserById(userId) != null) {
             validate(userStorage.getUserById(userId));
-            return userStorage.getUserById(userId);
+            return  userStorage.getUserById(userId);
         }
         log.debug("Пользователь с введеным id = {} не найден", userId);
         throw new NotFoundException("Пользователь с id = " + userId + " не найден");
@@ -36,15 +37,6 @@ public class UserService {
         validate(newUser);
         log.trace("Добавлен пользователь {} ",newUser);
         return userStorage.createUser(newUser);
-    }
-
-    public void deleteUser(int userId) {
-        log.info("Пришел запрос на удаление пользователя с id {} ", userId);
-        if (userStorage.getUserById(userId) == null) {
-            log.debug("Пользователь с введеным id = {} не найден", userId);
-            throw new NotFoundException("Пользователь с введеным id = " + userId + " не найден");
-        }
-        userStorage.deleteUser(userId);
     }
 
 
@@ -73,13 +65,8 @@ public class UserService {
             log.debug("Пользователь некорректно ввел id {} ", friendId);
             throw new NotFoundException("Друг с id = " + friendId + " не найден");
         }
-        if (userStorage.getUserById(userId).getFriends().contains(friendId)) {
-            log.debug("Пользователь некорректно ввел id друга {} ", friendId);
-            throw new NotFoundException("Друг с id = " + friendId + " в друзьях не найден");
-        }
-        User user = getUserById(userId);
-        User friend = getUserById(userId);
-        userStorage.addFriend(user, friend);
+        userStorage.createFriend(userId, friendId);
+
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
@@ -96,33 +83,24 @@ public class UserService {
         userStorage.deleteFriend(userId, friendId);
     }
 
-    public Collection<User> getAllUserFriends(Integer userId) {
+    public List<User> getFriendsById(Integer userId) {
         if (userStorage.getUserById(userId) == null) {
             log.debug("Пользователь с id {} не найден", userId);
             throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
-        if (userStorage.getUserById(userId).getFriends() == null) {
-            log.debug("У пользователя с id {} друзья не найдены", userId);
-            throw new NotFoundException("У пользователя с id = " + userId + " друзья не найдены");
-        }
-        return userStorage.getUserById(userId).getFriends().stream()
-                .map(userStorage::getUserById)
-                .toList();
+        return userStorage.getFriendsById(userId);
     }
 
-    public Collection<User> getCommonFriends(Integer userId, Integer commonId) {
+    public List<User> getCommonFriends(Integer userId, Integer friendId) {
         if (userStorage.getUserById(userId) == null) {
             log.debug("Пользователь некорректно ввел id {} ", userId);
             throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
-        if (userStorage.getUserById(commonId) == null) {
-            log.debug("Пользователь некорректно ввел id {} ", commonId);
-            throw new NotFoundException("Пользователь с id = " + commonId + " не найден");
+        if (userStorage.getUserById(friendId) == null) {
+            log.debug("Пользователь некорректно ввел id {} ", friendId);
+            throw new NotFoundException("Пользователь с id = " + friendId + " не найден");
         }
-        return userStorage.getUserById(userId).getFriends().stream()
-                .filter(id -> userStorage.getUserById(commonId).getFriends().contains(id))
-                .map(userStorage::getUserById)
-                .toList();
+        return userStorage.getCommonFriends(userId, friendId);
     }
 
     private void validate(User newUser) {
