@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Service
 @Slf4j

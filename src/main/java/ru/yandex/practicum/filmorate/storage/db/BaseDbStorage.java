@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import ru.yandex.practicum.filmorate.exception.InternalServerException;
 
@@ -29,22 +28,14 @@ public class BaseDbStorage<T> {
         }
     }
 
+
     protected List<T> findMany(String query, Object... params) {
         return jdbc.query(query, mapper, params);
     }
 
-    protected <T> List<T> findManyInstances(String query, Class<T> type, Object... params) {
-        return jdbc.query(query, new SingleColumnRowMapper<>(type), params);
-    }
 
-    public boolean delete(String query, Integer id) {
-        int rowsDeleted = jdbc.update(query, id);
-        return rowsDeleted > 0;
-    }
-
-    protected boolean delete(String query, Integer id, Integer id2) {
-        int rowsDeleted = jdbc.update(query, id, id2);
-        return rowsDeleted > 0;
+    protected void delete(String query, Integer id, Integer id2) {
+        jdbc.update(query, id, id2);
     }
 
     protected int insert(String query, Object... params) {

@@ -52,5 +52,6 @@ create table if not exists  genre_films (
   film_id int,
   foreign key (genre_id) references genres (id),
   foreign key (film_id) references films (id),
-  primary key (genre_id, film_id)
+  primary key (genre_id, film_id),
+  unique (genre_id, film_id)
 );

@@ -16,7 +16,7 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM users WHERE id = ?";
     private static final String INSERT_QUERY = """
             INSERT INTO users (email, name, login, birthday)
-            VALUES (?,?,?,?) returning id
+            VALUES (?,?,?,?)
             """;
     private static final String UPDATE_QUERY = """
             UPDATE users SET login = ?, name = ?, email = ?, birthday = ?
@@ -25,7 +25,7 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
 
     private static final String INSERT_FRIEND_QUERY = """
             INSERT INTO user_friends (user_id, friend_id)
-            VALUES (?,?) returning friend_id
+            VALUES (?,?)
             """;
     private static final String DELETE_FRIEND_QUERY = """
             DELETE FROM user_friends
@@ -33,7 +33,7 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
             """;
 
     private static final String FIND_FRIENDS_BY_ID = """
-            SELECT u.id, u.email, u.name, u.login, u.birthday
+            SELECT u.*
             FROM user_friends  AS uf
             LEFT JOIN users AS u ON uf.friend_id = u.id
             WHERE uf.user_id = ?
@@ -41,13 +41,20 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
             """;
 
     private static final String FIND_COMMON_FRIENDS_BY_ID = """
-            SELECT u.id, u.email, u.name, u.login, u.birthday
+            SELECT u.*
             FROM user_friends as uf
             LEFT JOIN users AS u ON uf.friend_id = u.id
             WHERE uf.user_id = ?
             AND uf.friend_id IN (SELECT friend_id FROM user_friends WHERE user_id = ?);
             """;
 
+    private static final String FIND_LIKE_BY_ID_QUERY = """
+            SELECT u.*
+            FROM films  AS f
+            LEFT JOIN likes AS l ON f.id = l.film_id
+            LEFT JOIN users AS u ON u.id = l.user_id
+            WHERE f.id = ?
+            """;
 
 
     public UserDbStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
@@ -60,9 +67,8 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
     }
 
     @Override
-    public User getUserById(Integer userId) {
-        Optional<User> user = findOne(FIND_BY_ID_QUERY, userId);
-        return user.orElse(null);
+    public Optional<User> getUserById(Integer userId) {
+        return findOne(FIND_BY_ID_QUERY, userId);
     }
 
     @Override
@@ -89,13 +95,14 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
         );
         return newUser;
     }
+
     @Override
     public void createFriend(Integer userId, Integer friendId) {
-        insert(
+        update(
                 INSERT_FRIEND_QUERY,
                 userId,
                 friendId
-                );
+        );
     }
 
     @Override
@@ -114,4 +121,8 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
         return findMany(FIND_COMMON_FRIENDS_BY_ID, userId, friendId);
     }
 
+    @Override
+    public List<User> getLikesById(Integer filmId) {
+        return findMany(FIND_LIKE_BY_ID_QUERY, filmId);
+    }
 }

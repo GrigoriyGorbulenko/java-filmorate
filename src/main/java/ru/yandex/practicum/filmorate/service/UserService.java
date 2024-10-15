@@ -24,47 +24,36 @@ public class UserService {
 
 
     public User getUserById(Integer userId) {
-        if (userStorage.getUserById(userId) != null) {
-            validate(userStorage.getUserById(userId));
-            return  userStorage.getUserById(userId);
-        }
-        log.debug("Пользователь с введеным id = {} не найден", userId);
-        throw new NotFoundException("Пользователь с id = " + userId + " не найден");
+
+        return userStorage.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
     }
 
     public User createUser(User newUser) {
         log.info("Пришел запрос на добавление пользователя с логином {} ", newUser.getLogin());
         validate(newUser);
-        log.trace("Добавлен пользователь {} ",newUser);
+        log.trace("Добавлен пользователь {} ", newUser);
         return userStorage.createUser(newUser);
     }
 
 
     public User updateUser(User newUser) {
         log.info("Пришел запрос на обновление пользователя с логином {} ", newUser.getLogin());
-        if (newUser.getId() == null) {
-            log.info("Пользователь не указал id");
-            throw new NotFoundException("Id должен быть указан");
-        }
-        if (userStorage.getUserById(newUser.getId()) != null) {
-            validate(newUser);
-            log.trace("Обновлен пользователь с id {} ", newUser.getId());
-            return userStorage.updateUser(newUser);
-        }
-        log.debug("Пользователь с введеным id = {} не найден", newUser.getId());
-        throw new NotFoundException("Пользователь с id = " + newUser.getId() + " не найден");
+        User user = userStorage.getUserById(newUser.getId())
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + newUser.getId() + " не найден"));
+        validate(newUser);
+
+        return userStorage.updateUser(newUser);
     }
 
     public void createFriend(Integer userId, Integer friendId) {
         log.info("Пришел запрос на добавление друга с id = {} ", friendId);
-        if (userStorage.getUserById(userId) == null) {
-            log.debug("Пользователь некорректно ввел id {} ", userId);
-            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
-        }
-        if (userStorage.getUserById(friendId) == null) {
-            log.debug("Пользователь некорректно ввел id {} ", friendId);
-            throw new NotFoundException("Друг с id = " + friendId + " не найден");
-        }
+        userStorage.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+
+        userStorage.getUserById(friendId)
+                .orElseThrow(() -> new NotFoundException("Друг с id = " + friendId + " не найден"));
+
         userStorage.createFriend(userId, friendId);
 
     }
@@ -72,34 +61,29 @@ public class UserService {
     public void deleteFriend(Integer userId, Integer friendId) {
         log.info("Пришел запрос на удаление друга с id {}",
                 friendId);
-        if (userStorage.getUserById(userId) == null) {
-            log.debug("Пользователь некорректно ввел id {} ", userId);
-            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
-        }
-        if (userStorage.getUserById(friendId) == null) {
-            log.debug("Пользователь некорректно ввел id {} ", friendId);
-            throw new NotFoundException("Пользователь с id = " + friendId + " не найден");
-        }
+        userStorage.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+
+        userStorage.getUserById(friendId)
+                .orElseThrow(() -> new NotFoundException("Друг с id = " + friendId + " не найден"));
+
         userStorage.deleteFriend(userId, friendId);
     }
 
     public List<User> getFriendsById(Integer userId) {
-        if (userStorage.getUserById(userId) == null) {
-            log.debug("Пользователь с id {} не найден", userId);
-            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
-        }
+        userStorage.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+
         return userStorage.getFriendsById(userId);
     }
 
     public List<User> getCommonFriends(Integer userId, Integer friendId) {
-        if (userStorage.getUserById(userId) == null) {
-            log.debug("Пользователь некорректно ввел id {} ", userId);
-            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
-        }
-        if (userStorage.getUserById(friendId) == null) {
-            log.debug("Пользователь некорректно ввел id {} ", friendId);
-            throw new NotFoundException("Пользователь с id = " + friendId + " не найден");
-        }
+        userStorage.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+
+        userStorage.getUserById(friendId)
+                .orElseThrow(() -> new NotFoundException("Друг с id = " + friendId + " не найден"));
+
         return userStorage.getCommonFriends(userId, friendId);
     }
 

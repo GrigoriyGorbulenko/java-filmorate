@@ -10,14 +10,16 @@ import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import java.util.Collection;
 import java.util.Optional;
 
+
+
 @Repository
 public class MpaDbStorage extends BaseDbStorage<Mpa> implements MpaStorage {
     private static final String FIND_ALL_QUERY = "SELECT * FROM mpa";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM mpa WHERE id = ?";
 
     private static final String FIND_BY_FILM_ID_QUERY = """
-            SELECT f.mpa_id, m.name
-            FROM films f JOIN mpa m ON f.mpa_id = m.id WHERE f.id = ?
+            SELECT m.id, m.name
+            FROM films as f  JOIN mpa m ON f.mpa_id = m.id WHERE f.id = ?
             """;
 
     public MpaDbStorage(JdbcTemplate jdbc, RowMapper<Mpa> mapper) {

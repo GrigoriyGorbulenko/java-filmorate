@@ -4,11 +4,12 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserStorage {
     Collection<User> getAllUsers();
 
-    User getUserById(Integer userId);
+    Optional<User> getUserById(Integer userId);
 
     User createUser(User newUser);
 
@@ -22,4 +23,5 @@ public interface UserStorage {
 
     List<User> getCommonFriends(Integer userId, Integer friendId);
 
+    List<User> getLikesById(Integer filmId);
 }

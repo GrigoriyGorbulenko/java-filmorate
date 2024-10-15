@@ -21,7 +21,7 @@ public class GenreService {
 
     public Genre getGenreById(Integer genreId) {
         log.info("Пришел запрос на получение жанра с id {} ", genreId);
-         return genreStorage.getGenreById(genreId)
-                 .orElseThrow(()-> new NotFoundException("Жанр с id = " + genreId + " не найден"));
+        return genreStorage.getGenreById(genreId)
+                .orElseThrow(() -> new NotFoundException("Жанр с id = " + genreId + " не найден"));
     }
 }
