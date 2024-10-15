@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -93,14 +94,13 @@ public class FilmService {
     }
 
     public Collection<Film> getPopularFilms(Integer count) {
-        List<Film> list = new ArrayList<>();
+        Collection<Film> list = new ArrayList<>();
         filmStorage.getPopularFilms(count).forEach(film -> {
             Film newFilm = mapToFilm(film);
-            int likes = userStorage.getLikesById(film.getId()).size();
-            newFilm.setUsersLikes(likes);
             list.add(newFilm);
         });
         return list;
+
     }
 
     private void validate(Film film) {
@@ -126,11 +126,16 @@ public class FilmService {
         Mpa mpa = mpaStorage.getMpaByFilmId(film.getId())
                 .orElseThrow(() -> new NotFoundException(" Mpa не найден"));
         film.setMpa(mpa);
-        List<Genre> genreList = film.getGenres();
+        List<Genre> genres = film.getGenres();
+        Set<Genre> genreList = new HashSet<>(genres);
+
         for (Genre genre : genreList) {
+            genreStorage.getGenreById(genre.getId())
+                    .orElseThrow(() -> new ValidationException("Жанр не найден"));
             filmStorage.createGenre(genre.getId(), film.getId());
         }
-        film.setGenres(genreStorage.getGenreByFilmId(film.getId()));
+        film.setGenres((genreStorage.getGenreByFilmId(film.getId())));
+
         return film;
     }
 }

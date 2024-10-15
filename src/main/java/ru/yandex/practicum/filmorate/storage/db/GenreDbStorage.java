@@ -22,6 +22,7 @@ public class GenreDbStorage extends BaseDbStorage<Genre> implements GenreStorage
             JOIN genre_films gf ON f.id = gf.film_id
             JOIN genres g ON  g.id = gf.genre_id
             WHERE f.id = ?
+            ORDER BY g.id
             """;
 
 

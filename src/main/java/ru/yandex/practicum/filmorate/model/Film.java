@@ -3,10 +3,10 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Data
 public class Film {
