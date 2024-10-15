@@ -27,9 +27,9 @@ public class FilmService {
     private final UserStorage userStorage;
     private final GenreStorage genreStorage;
     private final MpaStorage mpaStorage;
-    private final int maxLengthDescription = 200;
+    private static final int MAX_LENGTH_DESCRIPTION = 200;
 
-    private final LocalDate dateReleaseNotEarle = LocalDate.of(1895, 12, 28);
+    private static final LocalDate DATE_RELEASE_NOT_EARLY = LocalDate.of(1895, 12, 28);
 
     public Collection<Film> getAllFilms() {
 
@@ -108,11 +108,11 @@ public class FilmService {
             log.debug("Пользователь не ввел название фильма");
             throw new ValidationException("Название не должно быть пустым");
         }
-        if (film.getDescription().length() > maxLengthDescription) {
+        if (film.getDescription().length() > MAX_LENGTH_DESCRIPTION) {
             log.debug("Пользователь ввел описание фильма больше 200 символов");
             throw new ValidationException("Длина описания не должна превышать 200 символов");
         }
-        if (film.getReleaseDate().isBefore(dateReleaseNotEarle)) {
+        if (film.getReleaseDate().isBefore(DATE_RELEASE_NOT_EARLY)) {
             log.debug("Пользователь ввел некорректную дату фильма");
             throw new ValidationException("Дата релиза должна быть не раньше 28 декабря 1895 года");
         }
