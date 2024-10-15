@@ -45,9 +45,9 @@ public class UserDbStorageTest {
     @Test
     void testCreateUser() {
 
-       User user = userStorage.createUser(getTestUser2());
-        assertThat(user).
-                hasFieldOrPropertyWithValue("id", 6);
+        User user = userStorage.createUser(getTestUser2());
+        assertThat(user)
+                .hasFieldOrPropertyWithValue("id", 6);
     }
 
     @Test

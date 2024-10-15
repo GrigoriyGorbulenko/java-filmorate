@@ -60,8 +60,8 @@ class FilmDbStorageTest {
     @Test
     void testCreateFilm() {
         Film film = filmStorage.createFilm(getTestFilm2());
-        assertThat(film).
-                hasFieldOrPropertyWithValue("id", 6);
+        assertThat(film)
+                .hasFieldOrPropertyWithValue("id", 6);
     }
 
     @Test

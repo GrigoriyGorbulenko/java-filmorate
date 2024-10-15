@@ -47,9 +47,9 @@ public class FilmService {
     public Film createFilm(Film newFilm) {
         log.trace("Пришел запрос на добавление фильма {}", newFilm);
         validate(newFilm);
-        mpaStorage.getMpaById(newFilm.getMpa().getId()).
-                orElseThrow(() -> new ValidationException(" Mpa не найден"));
-        List<Genre> genreList =  newFilm.getGenres();
+        mpaStorage.getMpaById(newFilm.getMpa().getId())
+                .orElseThrow(() -> new ValidationException(" Mpa не найден"));
+        List<Genre> genreList = newFilm.getGenres();
         for (Genre genre : genreList) {
             genreStorage.getGenreById(genre.getId())
                     .orElseThrow(() -> new ValidationException("Жанр не найден"));
@@ -74,7 +74,7 @@ public class FilmService {
         filmStorage.getFilmById(filmId)
                 .orElseThrow(() -> new NotFoundException("Фильм с id = " + filmId + " не найден"));
         userStorage.getUserById(userId)
-                .orElseThrow(() ->  new NotFoundException("Пользователь с id = " + userId + " не найден"));
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
         log.info("Пришел запрос на добавление лайка фильму с id {}", userId);
 
         filmStorage.createLike(filmId, userId);
@@ -86,7 +86,7 @@ public class FilmService {
         filmStorage.getFilmById(filmId)
                 .orElseThrow(() -> new NotFoundException("Фильм с id = " + filmId + " не найден"));
         userStorage.getUserById(userId)
-                .orElseThrow(() ->  new NotFoundException("Пользователь с id = " + userId + " не найден"));
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
         log.info("Пришел запрос на даление лайка фильму с id {}", userId);
 
         filmStorage.deleteLike(filmId, userId);
@@ -123,10 +123,10 @@ public class FilmService {
     }
 
     private Film mapToFilm(Film film) {
-        Mpa mpa = mpaStorage.getMpaByFilmId(film.getId()).
-                orElseThrow(() -> new NotFoundException(" Mpa не найден"));
+        Mpa mpa = mpaStorage.getMpaByFilmId(film.getId())
+                .orElseThrow(() -> new NotFoundException(" Mpa не найден"));
         film.setMpa(mpa);
-        List<Genre> genreList =  film.getGenres();
+        List<Genre> genreList = film.getGenres();
         for (Genre genre : genreList) {
             filmStorage.createGenre(genre.getId(), film.getId());
         }
