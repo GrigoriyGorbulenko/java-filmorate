@@ -103,6 +103,16 @@ public class FilmService {
 
     }
 
+    public Collection<Film> getPopularFilms2(Integer count) {
+        Collection<Film> list = new ArrayList<>();
+        filmStorage.getPopularFilms(count).forEach(film -> {
+            Film newFilm = mapToFilm(film);
+            list.add(newFilm);
+        });
+        return list;
+
+    }
+
     private void validate(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             log.debug("Пользователь не ввел название фильма");
